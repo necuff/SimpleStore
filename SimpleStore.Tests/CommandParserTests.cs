@@ -1,6 +1,6 @@
-using Zaykov_SimpleStore;
+using Zaykov.SimpleStore;
 
-namespace SimpleStore.Tests
+namespace Zaykov.SimpleStore.Tests
 {
     public class CommandParserTests
     {

@@ -1,4 +1,4 @@
-﻿namespace Zaykov_SimpleStore
+﻿namespace Zaykov.SimpleStore
 {
     public static class CommandParser
     {        
