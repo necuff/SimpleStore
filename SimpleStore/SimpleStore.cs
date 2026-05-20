@@ -1,4 +1,4 @@
-﻿namespace SimpleStore
+﻿namespace Zaykov_SimpleStore
 {
     public interface ISimpleStore
     {
