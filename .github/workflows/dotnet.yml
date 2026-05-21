@@ -10,19 +10,24 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
 
+  test:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '8.0.x'
+    
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Run tests
+      run: dotnet test SimpleStore.Tests/SimpleStore.Tests.csproj --configuration Release --no-build --verbosity normal
