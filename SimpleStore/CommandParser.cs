@@ -31,10 +31,7 @@
 
             var resultCommand = new Command() { command = command, key = key, value = value };
 
-            if(CommandIsValid(resultCommand))
-                return resultCommand;
-            else
-                return new Command();
+            return CommandIsValid(resultCommand) ? resultCommand : new Command();
         }
 
         private static bool CommandIsValid(Command command)
