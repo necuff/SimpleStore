@@ -1,7 +1,10 @@
-﻿namespace Zaykov.SimpleStore
+﻿using System.Runtime.CompilerServices;
+
+namespace Zaykov.SimpleStore
 {
     public static class CommandParser
     {        
+        
         public static Command Parse(ReadOnlySpan<char> input)
         {            
             if (input.IsEmpty)
@@ -28,7 +31,7 @@
             {
                 key = input;
             }
-
+            
             var resultCommand = new Command() { command = command, key = key, value = value };
 
             return CommandIsValid(resultCommand) ? resultCommand : new Command();
