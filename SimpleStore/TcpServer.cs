@@ -9,13 +9,13 @@ namespace SimpleStore
 {
     public interface ITcpServer
     {
-        Task StartAsync();
+        Task StartAsync(CancellationToken cancellationToken);
     }
     public class TcpServer : ITcpServer
     {
         private Socket _listenerSocket;
-        public async Task StartAsync()
-        {
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {            
             var port = 8080;
             var address = "127.0.0.1";
 
@@ -27,18 +27,18 @@ namespace SimpleStore
 
                 Console.WriteLine($"Сервер запущен по адресу {address}:{port}");
 
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     var clientSocket = await _listenerSocket.AcceptAsync();
                     var clientName = $"Клиент {clientSocket.RemoteEndPoint?.ToString()}";
                     Console.WriteLine($"{clientName} подключился: ");
                     
-                    _ = ProcessClientAsync(clientSocket, clientName);                    
+                    _ = ProcessClientAsync(clientSocket, clientName, cancellationToken);                    
                 }
             }                
         }
 
-        private async Task ProcessClientAsync(Socket clientSocket, string clientName)
+        private async Task ProcessClientAsync(Socket clientSocket, string clientName, CancellationToken cancellationToken)
         {
             using (clientSocket)
             {
@@ -46,7 +46,7 @@ namespace SimpleStore
 
                 try
                 {
-                    while (true)
+                    while (!cancellationToken.IsCancellationRequested)
                     {
                         int bytesRead = await clientSocket.ReceiveAsync(buffer);
                         if (bytesRead == 0) break;
@@ -55,11 +55,7 @@ namespace SimpleStore
 
                         ReadOnlyMemory<char> span = Encoding.UTF8.GetString(receiveData.Span).AsMemory();
 
-                        var resultCommand = CommandParser.Parse(span.Span).command.ToString().AsMemory();
-                        var resultKey = CommandParser.Parse(span.Span).key.ToString().AsMemory();
-                        var resultValue = CommandParser.Parse(span.Span).value.ToString().AsMemory();
-
-                        Console.WriteLine($"{resultCommand}, {resultKey}, {resultValue}");
+                        WriteToConsole(CommandParser.Parse(span.Span));                        
                     }                                        
                 }
                 catch (Exception ex) 
@@ -72,8 +68,12 @@ namespace SimpleStore
                     Console.WriteLine($"{clientName} отключился");
                     clientSocket.Close();
                 }
-            }
-                
+            }                
+        }
+
+        private void WriteToConsole(Zaykov.SimpleStore.Command command)
+        {
+            Console.WriteLine($"{command.command}, {command.key}, {command.value}");
         }
     }
 }
