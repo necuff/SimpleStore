@@ -3,9 +3,8 @@ using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Zaykov.SimpleStore;
 
-namespace SimpleStore
+namespace Zaykov.SimpleStore
 {
     public interface ITcpServer
     {
@@ -71,7 +70,7 @@ namespace SimpleStore
             }                
         }
 
-        private void WriteToConsole(Zaykov.SimpleStore.Command command)
+        private void WriteToConsole(Command command)
         {
             Console.WriteLine($"{command.command}, {command.key}, {command.value}");
         }
