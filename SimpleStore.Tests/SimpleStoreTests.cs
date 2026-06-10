@@ -30,7 +30,7 @@ namespace Zaykov.SimpleStore.Tests
                     {
                         string key = $"key_threadId_{i}_operation_{j}";
                         store.Set(key, Encoding.UTF8.GetBytes(key));
-                        _localSetCounter++;
+                        Interlocked.Increment(ref _localSetCounter);
                     }
                 }));
             }
@@ -47,13 +47,12 @@ namespace Zaykov.SimpleStore.Tests
                         try
                         {
                             var value = store.Get(key);
-                            _localGetCounter++;
+                            Interlocked.Increment(ref _localGetCounter);
                         }
                         catch (Exception ex) 
                         {
-                            exceptionCounter++;
+                            Interlocked.Increment(ref exceptionCounter);
                         }
-
                     }
                 }));
             }
