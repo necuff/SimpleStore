@@ -26,6 +26,8 @@ namespace SimpleStore.StressTests
 
         public async Task<string> SetAsync(string key, byte[] value)
         {
+            if (key.Length == 0 || value.Length == 0)
+                return string.Empty;
             string message = $"set {key} {Encoding.UTF8.GetString(value)}";
 
             var response = await SendMessageAsync(message);
@@ -36,20 +38,20 @@ namespace SimpleStore.StressTests
 
         public async Task GetAsync(string key)
         {
+            if (key.Length == 0)
+                return;
             string message = $"get {key}";
 
-            var response = await SendMessageAsync(message);
-
-            Console.WriteLine(response.ToString());
+            var response = await SendMessageAsync(message);            
         }
 
-        public async Task DeleteAsync(string key)
+        public async Task DeleteAsync(string key)            
         {
+            if (key.Length == 0)
+                return;
             string message = $"delete {key}";
 
-            var response = await SendMessageAsync(message);
-
-            Console.WriteLine(response.ToString());
+            var response = await SendMessageAsync(message);            
         }
 
         public void Disconnect()
