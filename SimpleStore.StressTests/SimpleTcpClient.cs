@@ -8,11 +8,12 @@ namespace SimpleStore.StressTests
     {
         private TcpClient _tcpClient;
         private NetworkStream? _stream;
+        const int port = 8080;
+        const string address = "127.0.0.1";
 
         public async Task ConnectAsync()
-        {
-            var port = 8080;
-            var address = "127.0.0.1";
+        {            
+            
             _tcpClient = new TcpClient();            
             await _tcpClient.ConnectAsync(address, port);
 
@@ -76,7 +77,7 @@ namespace SimpleStore.StressTests
         {
             if (_stream == null || !_tcpClient!.Connected)
                 throw new InvalidOperationException("Клиент не подключен");
-
+            
             await _stream.WriteAsync(Encoding.UTF8.GetBytes(message), 0, message.Length);
 
             var response = await ReceiveLineAsync();

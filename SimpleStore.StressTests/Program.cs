@@ -27,6 +27,7 @@ var scenario = Scenario.Create("simple_test", async context =>
     simpleTcpClient.Disconnect();
     return Response.Ok();
 })
+    .WithWarmUpDuration(TimeSpan.FromSeconds(5))
     .WithLoadSimulations(
         Simulation.Inject(10, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10)),
         Simulation.Inject(100, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30))
