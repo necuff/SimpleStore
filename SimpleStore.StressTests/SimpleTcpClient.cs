@@ -11,21 +11,22 @@ namespace SimpleStore.StressTests
         const int port = 8080;
         const string address = "127.0.0.1";
 
-        public async Task ConnectAsync()
+        public async Task ConnectAsync(CancellationToken cancellationToken)
         {            
             
             _tcpClient = new TcpClient();            
-            await _tcpClient.ConnectAsync(address, port);
+            await _tcpClient.ConnectAsync(address, port, cancellationToken);
 
             _stream = _tcpClient.GetStream();
 
             Console.WriteLine("Клиент подключен");
         }
 
-       
-
-        public async Task<string> SetAsync(string key, byte[] value)
+        public async Task<string> SetAsync(string key, byte[] value, CancellationToken cancellationToken)
         {
+            if(cancellationToken.IsCancellationRequested)
+                return string.Empty;
+
             if (key.Length == 0 || value.Length == 0)
                 return string.Empty;
             string message = $"set {key} {Encoding.UTF8.GetString(value)}";
@@ -36,8 +37,10 @@ namespace SimpleStore.StressTests
             return response;
         }
 
-        public async Task GetAsync(string key)
+        public async Task GetAsync(string key, CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+                return;
             if (key.Length == 0)
                 return;
             string message = $"get {key}";
@@ -45,8 +48,10 @@ namespace SimpleStore.StressTests
             var response = await SendMessageAsync(message);            
         }
 
-        public async Task DeleteAsync(string key)            
+        public async Task DeleteAsync(string key, CancellationToken cancellationToken)            
         {
+            if (cancellationToken.IsCancellationRequested)
+                return;
             if (key.Length == 0)
                 return;
             string message = $"delete {key}";

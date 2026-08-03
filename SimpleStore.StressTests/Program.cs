@@ -5,10 +5,13 @@ using SimpleStore.StressTests;
 var scenario = Scenario.Create("simple_test", async context =>
 {
     SimpleTcpClient simpleTcpClient = new SimpleTcpClient();
-    await simpleTcpClient.ConnectAsync();
+    await simpleTcpClient.ConnectAsync(context.ScenarioCancellationToken);
 
     var step1 = await Step.Run("step1", context, async () =>
     {
+
+        context.ScenarioCancellationToken.ThrowIfCancellationRequested();
+
         Random rnd = new Random();
         var bytes = new byte[16];
         rnd.NextBytes(bytes);
@@ -16,7 +19,7 @@ var scenario = Scenario.Create("simple_test", async context =>
         rnd.NextBytes(bytes);
         var value = bytes;
 
-        var result = await simpleTcpClient.SetAsync(key, value);
+        var result = await simpleTcpClient.SetAsync(key, value, context.ScenarioCancellationToken);
         if (result == "OK")
             return Response.Ok();
 
@@ -26,7 +29,7 @@ var scenario = Scenario.Create("simple_test", async context =>
 
     simpleTcpClient.Disconnect();
     return Response.Ok();
-})
+    })
     .WithWarmUpDuration(TimeSpan.FromSeconds(5))
     .WithLoadSimulations(
         Simulation.Inject(10, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(10)),
