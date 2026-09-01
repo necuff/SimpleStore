@@ -1,9 +1,13 @@
-﻿namespace Zaykov.SimpleStore
+﻿using Zaykov.SimpleStoreProject;
+using Newtonsoft.Json;
+using System.Text;
+
+namespace Zaykov.SimpleStoreProject
 {
     public interface ISimpleStore
     {
-        void Set(string key, byte[] value);
-        byte[] Get(string key);
+        void Set(string key, UserProfile profile);
+        UserProfile Get(string key);
         void Delete(string key);
     }
 
@@ -43,7 +47,7 @@
             }
         }
 
-        public byte[] Get(string key)
+        public UserProfile Get(string key)
         {
             _lock.EnterReadLock();
             try
@@ -55,7 +59,8 @@
                     throw new KeyNotFoundException($"Key '{key}' not found");
 
                 Interlocked.Increment(ref _getCount);
-                return value;
+
+                return JsonConvert.DeserializeObject<UserProfile>(Encoding.UTF8.GetString(value));                 
             }
             finally 
             { 
@@ -64,11 +69,13 @@
             
         }
 
-        public void Set(string key, byte[] value)
-        {
+        public void Set(string key, UserProfile profile)
+        {            
             _lock.EnterWriteLock();
             try
             {
+                byte[] value = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(profile));
+
                 if (key is null)
                     throw new ArgumentNullException(nameof(key));
 

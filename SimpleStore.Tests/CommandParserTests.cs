@@ -1,4 +1,4 @@
-namespace Zaykov.SimpleStore.Tests
+namespace Zaykov.SimpleStoreProject.Tests
 {
     public class CommandParserTests
     {

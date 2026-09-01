@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Zaykov.SimpleStore
+﻿namespace Zaykov.SimpleStoreProject
 {
     public static class CommandParser
     {        

@@ -1,10 +1,11 @@
-﻿using System.Buffers;
+﻿using Zaykov.SimpleStoreProject;
+using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
+using System.Text.Json;
 
-namespace Zaykov.SimpleStore
+namespace Zaykov.SimpleStoreProject
 {
     public interface ITcpServer
     {
@@ -94,7 +95,7 @@ namespace Zaykov.SimpleStore
                     try
                     {
                         var result = _simpleStore.Get(command.key.ToString());
-                        return Encoding.UTF8.GetString(result) + "\r\n";
+                        return result.Name + "\r\n";
                     }
                     catch
                     {
@@ -103,7 +104,9 @@ namespace Zaykov.SimpleStore
                 case "set":
                     try
                     {
-                        _simpleStore.Set(command.key.ToString(), Encoding.UTF8.GetBytes(command.value.ToArray()));
+
+                        var profile = JsonSerializer.Deserialize<UserProfile>(command.value);
+                        _simpleStore.Set(command.key.ToString(), profile);
                         return ok_result;
                     }
                     catch

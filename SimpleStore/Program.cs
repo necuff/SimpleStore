@@ -1,5 +1,4 @@
-﻿using Zaykov.SimpleStore;
-
+﻿using Zaykov.SimpleStoreProject;
 
 SimpleStore simpleStore = new SimpleStore();
 

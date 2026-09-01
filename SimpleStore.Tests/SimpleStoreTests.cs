@@ -1,8 +1,5 @@
 ﻿
-
-using System.Text;
-
-namespace Zaykov.SimpleStore.Tests
+namespace Zaykov.SimpleStoreProject.Tests
 {
     public class SimpleStoreTests
     {
@@ -29,7 +26,8 @@ namespace Zaykov.SimpleStore.Tests
                     for(int j = 0; j < operationsCount; j++)
                     {
                         string key = $"key_threadId_{i}_operation_{j}";
-                        store.Set(key, Encoding.UTF8.GetBytes(key));
+                        UserProfile profile = new UserProfile() { Id = j, Name = "name" + j, CreatedAt = DateTime.Now };
+                        store.Set(key, profile);
                         Interlocked.Increment(ref _localSetCounter);
                     }
                 }));
